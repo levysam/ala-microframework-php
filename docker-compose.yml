@@ -3,27 +3,19 @@ services:
   ala-php:
     build:
       context: ./
-      dockerfile: ./ops/docker/dev/php-fpm/Dockerfile 
+      dockerfile: ./ops/docker/prod/php-fpm/Dockerfile
     container_name: ala-php
+    ports:
+      - "9000:80"
+      - "9001:443"
     depends_on:
       - ala-mysql
     volumes:
-      - ./:/var/www/html
-
-  ala-nginx:
-    build:
-      context: ./
-      dockerfile: ./ops/docker/dev/nginx/Dockerfile
-    container_name: ala-nginx
-    depends_on:
-      - ala-php
-    ports:
-      - 8101:80
-    volumes:
-      - ./:/var/www/html
+      - ./:/app
+    tty: true
 
   ala-mysql:
-    image: mysql:8.0.28
+    image: mysql:8.0
     container_name: ala-mysql
     command: --default-authentication-plugin=mysql_native_password
     ports:

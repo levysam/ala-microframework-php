@@ -1,25 +1,7 @@
-ARG PHP_VERSION=8.3-rc-fpm
+FROM dunglas/frankenphp:1.2.2-php8.3
 
-FROM php:${PHP_VERSION}
+ENV SERVER_NAME=:80
+RUN install-php-extensions pdo_mysql
 
-RUN apt update \
-    && apt upgrade -y \
-    && apt install zip unzip git -y
-
-RUN pecl install xdebug-3.3.0alpha3 \
-    && docker-php-ext-install mysqli pdo pdo_mysql \
-    && docker-php-ext-enable pdo_mysql xdebug
-
-RUN echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.mode=debug,coverage" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.log=/var/log/xdebug.log" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.discover_client_host=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.client_port=9005" >> /usr/local/etc/php/conf.d/xdebug.ini
-
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
-
-WORKDIR /var/www/html
-
-EXPOSE 9000
-
-CMD ["php-fpm"]
+EXPOSE 80
+EXPOSE 443
